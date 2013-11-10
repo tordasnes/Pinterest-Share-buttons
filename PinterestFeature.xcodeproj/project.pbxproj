@@ -19,6 +19,8 @@
 		429CD2C9182FE5780008D65B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429CD2B1182FE5780008D65B /* UIKit.framework */; };
 		429CD2D1182FE5780008D65B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 429CD2CF182FE5780008D65B /* InfoPlist.strings */; };
 		429CD2D3182FE5780008D65B /* PinterestFeatureTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 429CD2D2182FE5780008D65B /* PinterestFeatureTests.m */; };
+		429CD2DE182FE7250008D65B /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 429CD2DD182FE7250008D65B /* MainViewController.m */; };
+		429CD2E1182FE8800008D65B /* PinterestButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 429CD2E0182FE8800008D65B /* PinterestButtonsView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +50,10 @@
 		429CD2CE182FE5780008D65B /* PinterestFeatureTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PinterestFeatureTests-Info.plist"; sourceTree = "<group>"; };
 		429CD2D0182FE5780008D65B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		429CD2D2182FE5780008D65B /* PinterestFeatureTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PinterestFeatureTests.m; sourceTree = "<group>"; };
+		429CD2DC182FE7250008D65B /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
+		429CD2DD182FE7250008D65B /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
+		429CD2DF182FE8800008D65B /* PinterestButtonsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PinterestButtonsView.h; sourceTree = "<group>"; };
+		429CD2E0182FE8800008D65B /* PinterestButtonsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PinterestButtonsView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +115,9 @@
 			children = (
 				429CD2BC182FE5780008D65B /* AppDelegate.h */,
 				429CD2BD182FE5780008D65B /* AppDelegate.m */,
+				429CD2DC182FE7250008D65B /* MainViewController.h */,
+				429CD2DD182FE7250008D65B /* MainViewController.m */,
+				429CD2E2182FE9C40008D65B /* PinterestButtons */,
 				429CD2BF182FE5780008D65B /* Images.xcassets */,
 				429CD2B4182FE5780008D65B /* Supporting Files */,
 			);
@@ -142,6 +151,15 @@
 				429CD2CF182FE5780008D65B /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		429CD2E2182FE9C40008D65B /* PinterestButtons */ = {
+			isa = PBXGroup;
+			children = (
+				429CD2DF182FE8800008D65B /* PinterestButtonsView.h */,
+				429CD2E0182FE8800008D65B /* PinterestButtonsView.m */,
+			);
+			name = PinterestButtons;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -240,6 +258,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				429CD2BE182FE5780008D65B /* AppDelegate.m in Sources */,
+				429CD2E1182FE8800008D65B /* PinterestButtonsView.m in Sources */,
+				429CD2DE182FE7250008D65B /* MainViewController.m in Sources */,
 				429CD2BA182FE5780008D65B /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
