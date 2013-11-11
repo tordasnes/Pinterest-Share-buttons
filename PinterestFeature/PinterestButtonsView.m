@@ -32,14 +32,14 @@
     _longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGestureRecognizer:)];
     [self addGestureRecognizer:_longPressGestureRecognizer];
     
-    _backgroundOverlay = [[CALayer alloc] init];
+    _backgroundOverlay = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
 }
 
 - (void)handleLongPressGestureRecognizer:(UILongPressGestureRecognizer*)gesture
 {
     if (gesture.state == UIGestureRecognizerStateBegan) {
         
-        [self backgroundOverlay];
+        [self addBackgroundOverlayView];
         
         
         CGPoint touchLocation = [gesture locationInView:self];
@@ -48,18 +48,26 @@
         NSLog(@"%.0f,%.0f", touchLocation.x, touchLocation.y);
         
     } else if (gesture.state == UIGestureRecognizerStateEnded) {
-
+        [self removeBackgroundOverlayView];
     }
 }
 
 
-- (void)backgroundOverlay
-{    
-    [_backgroundOverlay setBounds:CGRectMake(0, 0, self.superview.bounds.size.height, self.superview.bounds.size.height)];
-    [_backgroundOverlay setBackgroundColor:[[UIColor blackColor] CGColor]];
-    [_backgroundOverlay setOpacity:0.1];
-    [_backgroundOverlay setPosition:CGPointMake(0, 0)];
-    [self.layer addSublayer:_backgroundOverlay];
+- (void)addBackgroundOverlayView
+{
+    [_backgroundOverlay setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:1]];
+    _backgroundOverlay.alpha = 0;
+    [self addSubview:_backgroundOverlay];
+    [UIView animateWithDuration:0.3 animations:^{
+        _backgroundOverlay.alpha = 0.12;
+    }];
+}
+
+- (void)removeBackgroundOverlayView
+{
+    [UIView animateWithDuration:0.3 animations:^{
+        _backgroundOverlay.alpha = 0;
+    }];
 }
 
 

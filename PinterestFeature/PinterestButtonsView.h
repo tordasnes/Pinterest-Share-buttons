@@ -14,7 +14,7 @@
 @property (nonatomic, copy) NSString *secondButtonTitle;
 @property (nonatomic, copy) NSString *thirdButtonTitle;
 
-@property (nonatomic, strong) CALayer *backgroundOverlay;
+@property (nonatomic, strong) UIView *backgroundOverlay;
 
 
 
