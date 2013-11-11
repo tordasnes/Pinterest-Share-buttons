@@ -30,7 +30,7 @@
 - (void)initializer
 {
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGestureRecognizer:)];
-    [self.longPressGestureRecognizer setMinimumPressDuration:0.35];
+    [self.longPressGestureRecognizer setMinimumPressDuration:0.3];
     [self addGestureRecognizer:self.longPressGestureRecognizer];
     
     self.backgroundOverlay = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
@@ -38,6 +38,11 @@
     self.firstCircle = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"popupCircle"]];
     self.secondCircle = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"popupCircle"]];
     self.thirdCircle = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"popupCircle"]];
+
+    [self prepareImageView:self.firstCircle];
+    [self prepareImageView:self.secondCircle];
+    [self prepareImageView:self.thirdCircle];
+
     
 }
 
@@ -47,15 +52,17 @@
         
         [self addBackgroundOverlayView];
         
+        CGPoint touchPosition = [gesture locationInView:self];
+        NSLog(@"%.0f,%.0f", touchPosition.x, touchPosition.y);
+
+        // Add check for where the the tap is on the view
+        int direction = 1;
         
-        
-        CGPoint touchLocation = [gesture locationInView:self];
-        
-        
-        NSLog(@"%.0f,%.0f", touchLocation.x, touchLocation.y);
+        [self showCirclesAtPosition:touchPosition withDirection:direction];
         
     } else if (gesture.state == UIGestureRecognizerStateEnded) {
         [self removeBackgroundOverlayView];
+        [self removeCircles];
     }
 }
 
@@ -76,6 +83,65 @@
         self.backgroundOverlay.alpha = 0;
     }];
 }
+
+
+
+- (void)showCirclesAtPosition:(CGPoint)position withDirection:(int)direction
+{
+    [self setCirclePosition:self.firstCircle position:position];
+    [self setCirclePosition:self.secondCircle position:position];
+    [self setCirclePosition:self.thirdCircle position:position];
+
+    
+    if (direction == 1) { // Left - Up
+        
+    }
+    
+    [UIView animateWithDuration:0.22 animations:^{
+        self.firstCircle.alpha = 1;
+        self.secondCircle.alpha = 1;
+        self.thirdCircle.alpha = 1;
+        
+        self.firstCircle.transform = CGAffineTransformMakeTranslation(0, -86);
+        self.secondCircle.transform = CGAffineTransformMakeTranslation(-71, -71);
+        self.thirdCircle.transform = CGAffineTransformMakeTranslation(-86, 0);
+        
+    } completion:^(BOOL finished) {
+       [UIView animateWithDuration:0.22 animations:^{
+           self.firstCircle.transform = CGAffineTransformMakeTranslation(0, -80);
+           self.secondCircle.transform = CGAffineTransformMakeTranslation(-65, -65);
+           self.thirdCircle.transform = CGAffineTransformMakeTranslation(-80, 0);
+       }];
+    }];
+}
+
+- (void)removeCircles
+{
+    self.firstCircle.alpha = 0;
+    self.secondCircle.alpha = 0;
+    self.thirdCircle.alpha = 0;
+    
+    self.firstCircle.transform = CGAffineTransformMakeTranslation(0, 0);
+    self.secondCircle.transform = CGAffineTransformMakeTranslation(0, 0);
+    self.thirdCircle.transform = CGAffineTransformMakeTranslation(0, 0);
+}
+
+# pragma mark - Helper methods
+
+- (void)setCirclePosition:(UIImageView*)circle position:(CGPoint)position
+{
+    [circle setCenter:position];
+}
+
+- (void)prepareImageView:(UIImageView*)image
+{
+    image.alpha = 0;
+    //image.transform = CGAffineTransformMakeScale(0.1, 0.1);
+    [self addSubview:image];
+}
+
+
+
 
 
 /*
