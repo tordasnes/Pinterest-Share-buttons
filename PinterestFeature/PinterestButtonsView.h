@@ -10,11 +10,15 @@
 
 @interface PinterestButtonsView : UIView
 
-@property (nonatomic, copy) NSString *firstButtonTitle;
-@property (nonatomic, copy) NSString *secondButtonTitle;
-@property (nonatomic, copy) NSString *thirdButtonTitle;
+@property (nonatomic, copy) NSString *firstCircleTitle;
+@property (nonatomic, copy) NSString *secondCircleTitle;
+@property (nonatomic, copy) NSString *thirdCircleTitle;
 
 @property (nonatomic, strong) UIView *backgroundOverlay;
+
+@property (nonatomic, strong) UIImageView *firstCircle;
+@property (nonatomic, strong) UIImageView *secondCircle;
+@property (nonatomic, strong) UIImageView *thirdCircle;
 
 
 
