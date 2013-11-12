@@ -20,7 +20,7 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
-    PinterestButtonsView *pinterestView = [[PinterestButtonsView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
+    PinterestButtonsView *pinterestView = [[PinterestButtonsView alloc] init];
     [self.view addSubview:pinterestView];
 
 }

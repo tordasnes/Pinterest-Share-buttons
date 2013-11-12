@@ -19,12 +19,23 @@ static float const kRedRingReactivate = 15;
 
 @end
 
-
 @implementation PinterestButtonsView
+
+#pragma mark - Initialization
 
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
+    if (self) {
+        // Initialization code
+        [self initializer];
+    }
+    return self;
+}
+
+- (id)init
+{
+    self = [super initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)];
     if (self) {
         // Initialization code
         [self initializer];
@@ -53,9 +64,9 @@ static float const kRedRingReactivate = 15;
     
     self.isShowingCircles = NO;
     self.shouldPan = YES;
-
-    
 }
+
+#pragma mark - Handle Gestures
 
 - (void)handleLongPressGestureRecognizer:(UILongPressGestureRecognizer*)gesture
 {
@@ -73,7 +84,21 @@ static float const kRedRingReactivate = 15;
         NSLog(@"%.0f,%.0f, %.0f", point.x, point.y, self.touchDownPoint.x);
 
         // Add check for where the the tap is on the view
-        int direction = 1;
+        int direction = 0;
+        CGSize size = self.frame.size;
+        
+        // Decide which way the circles pop out
+        if (self.touchDownPoint.x >= size.width/2 && self.touchDownPoint.y >= size.height/4) {
+            direction = 1; // Left - UP
+        } else if (self.touchDownPoint.x <= size.width/2 && self.touchDownPoint.y >= size.height/4){
+            direction = 2; // Right - Up
+        } else if (self.touchDownPoint.x >= size.width/2 && self.touchDownPoint.y <= size.height/4) {
+            direction = 3; // Left - Down
+        } else if (self.touchDownPoint.x <= size.width/2 && self.touchDownPoint.y <= size.height/4) {
+            direction = 4; // Right - Down
+        } else {
+            direction = 1;
+        }
         
         [self showCirclesAtPosition:point withDirection:direction];
 
@@ -97,7 +122,6 @@ static float const kRedRingReactivate = 15;
                     self.redRing.center = point;
                 }];
 
-            
             }
         }
 
@@ -120,6 +144,8 @@ static float const kRedRingReactivate = 15;
     }
 }
 
+# pragma mark - Utils
+
 - (void)addBackgroundOverlayView
 {
     [self.backgroundOverlay setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:1]];
@@ -137,8 +163,6 @@ static float const kRedRingReactivate = 15;
     }];
 }
 
-
-
 - (void)showCirclesAtPosition:(CGPoint)position withDirection:(int)direction
 {
     
@@ -149,11 +173,104 @@ static float const kRedRingReactivate = 15;
 
     self.isShowingCircles = YES;
     
-    if (direction == 1) { // Left - Up
-        
+    CGFloat firstCircleX;
+    CGFloat firstCircleY;
+    CGFloat secondCircleX;
+    CGFloat secondCircleY;
+    CGFloat thirdCircleX;
+    CGFloat thirdCircleY;
+    
+    CGFloat firstCircleOffsetX;
+    CGFloat firstCircleOffsetY;
+    CGFloat secondCircleOffsetX;
+    CGFloat secondCircleOffsetY;
+    CGFloat thirdCircleOffsetX;
+    CGFloat thirdCircleOffsetY;
+
+    
+    switch (direction) {
+        case 1: // Left - Up
+            firstCircleX = 0;
+            firstCircleY = -80;
+            secondCircleX = -65;
+            secondCircleY = -65;
+            thirdCircleX = -80;
+            thirdCircleY = 0;
+            
+            firstCircleOffsetX = 0;
+            firstCircleOffsetY = -6;
+            secondCircleOffsetX = -6;
+            secondCircleOffsetY = -6;
+            thirdCircleOffsetX = -6;
+            thirdCircleOffsetY = 0;
+            break;
+            
+        case 2: // Right - Up
+            firstCircleX = 0;
+            firstCircleY = -80;
+            secondCircleX = 65;
+            secondCircleY = -65;
+            thirdCircleX = 80;
+            thirdCircleY = 0;
+            
+            firstCircleOffsetX = 0;
+            firstCircleOffsetY = -6;
+            secondCircleOffsetX = 6;
+            secondCircleOffsetY = -6;
+            thirdCircleOffsetX = 6;
+            thirdCircleOffsetY = 0;
+            break;
+            
+        case 3: // Left - Down
+            firstCircleX = -80;
+            firstCircleY = 0;
+            secondCircleX = -65;
+            secondCircleY = 65;
+            thirdCircleX = 0;
+            thirdCircleY = 80;
+            
+            firstCircleOffsetX = -6;
+            firstCircleOffsetY = 0;
+            secondCircleOffsetX = -6;
+            secondCircleOffsetY = 6;
+            thirdCircleOffsetX = 0;
+            thirdCircleOffsetY = 6;
+            break;
+            
+        case 4: // Right - Down
+            firstCircleX = 0;
+            firstCircleY = 80;
+            secondCircleX = 65;
+            secondCircleY = 65;
+            thirdCircleX = 80;
+            thirdCircleY = 0;
+            
+            firstCircleOffsetX = 0;
+            firstCircleOffsetY = 6;
+            secondCircleOffsetX = 6;
+            secondCircleOffsetY = 6;
+            thirdCircleOffsetX = 6;
+            thirdCircleOffsetY = 0;
+            break;
+            
+        default: // Left - Up
+            firstCircleX = 0;
+            firstCircleY = -80;
+            secondCircleX = -65;
+            secondCircleY = -65;
+            thirdCircleX = -80;
+            thirdCircleY = 0;
+            
+            firstCircleOffsetX = 0;
+            firstCircleOffsetY = -6;
+            secondCircleOffsetX = -6;
+            secondCircleOffsetY = -6;
+            thirdCircleOffsetX = -6;
+            thirdCircleOffsetY = 0;
+            break;
     }
     
-    self.redRing.transform = CGAffineTransformMakeScale(1.8, 1.8);
+    self.redRing.transform = CGAffineTransformMakeScale(2, 2);
     
     [UIView animateWithDuration:0.22 animations:^{
         self.firstCircle.alpha = 1;
@@ -161,16 +278,19 @@ static float const kRedRingReactivate = 15;
         self.thirdCircle.alpha = 1;
         self.redRing.alpha = 1;
         
-        self.firstCircle.transform = CGAffineTransformMakeTranslation(0, -86);
-        self.secondCircle.transform = CGAffineTransformMakeTranslation(-71, -71);
-        self.thirdCircle.transform = CGAffineTransformMakeTranslation(-86, 0);
+        self.firstCircle.transform = CGAffineTransformMakeTranslation(firstCircleX + firstCircleOffsetX,
+                                                                      firstCircleY + firstCircleOffsetY);
+        self.secondCircle.transform = CGAffineTransformMakeTranslation(secondCircleX + secondCircleOffsetX,
+                                                                       secondCircleY + secondCircleOffsetY);
+        self.thirdCircle.transform = CGAffineTransformMakeTranslation(thirdCircleX + thirdCircleOffsetX,
+                                                                      thirdCircleY + thirdCircleOffsetY);
         self.redRing.transform = CGAffineTransformMakeScale(1, 1);
         
     } completion:^(BOOL finished) {
        [UIView animateWithDuration:0.22 animations:^{
-           self.firstCircle.transform = CGAffineTransformMakeTranslation(0, -80);
-           self.secondCircle.transform = CGAffineTransformMakeTranslation(-65, -65);
-           self.thirdCircle.transform = CGAffineTransformMakeTranslation(-80, 0);
+           self.firstCircle.transform = CGAffineTransformMakeTranslation(firstCircleX, firstCircleY);
+           self.secondCircle.transform = CGAffineTransformMakeTranslation(secondCircleX, secondCircleY);
+           self.thirdCircle.transform = CGAffineTransformMakeTranslation(thirdCircleX, thirdCircleY);
        }];
     }];
 }
@@ -186,8 +306,6 @@ static float const kRedRingReactivate = 15;
     self.secondCircle.transform = CGAffineTransformMakeTranslation(0, 0);
     self.thirdCircle.transform = CGAffineTransformMakeTranslation(0, 0);
 }
-
-# pragma mark - Helper methods
 
 - (void)setCirclePosition:(UIImageView*)circle position:(CGPoint)position
 {
