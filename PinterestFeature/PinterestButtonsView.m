@@ -11,6 +11,7 @@
 @interface PinterestButtonsView () <UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
+@property (nonatomic, assign) CGPoint priorPoint;
 
 @end
 
@@ -32,22 +33,30 @@
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGestureRecognizer:)];
     [self.longPressGestureRecognizer setMinimumPressDuration:0.3];
     [self addGestureRecognizer:self.longPressGestureRecognizer];
+    [self.longPressGestureRecognizer setDelegate:self];
     
     self.backgroundOverlay = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
     
     self.firstCircle = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"popupCircle"]];
     self.secondCircle = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"popupCircle"]];
     self.thirdCircle = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"popupCircle"]];
+    self.redRing = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"redRing"]];
 
     [self prepareImageView:self.firstCircle];
     [self prepareImageView:self.secondCircle];
     [self prepareImageView:self.thirdCircle];
+    [self prepareImageView:self.redRing];
+    
+    self.isShowingCircles = NO;
 
     
 }
 
 - (void)handleLongPressGestureRecognizer:(UILongPressGestureRecognizer*)gesture
 {
+    UIView *view = gesture.view;
+    CGPoint point = [gesture locationInView:view.superview];
+    
     if (gesture.state == UIGestureRecognizerStateBegan) {
         
         [self addBackgroundOverlayView];
@@ -59,13 +68,20 @@
         int direction = 1;
         
         [self showCirclesAtPosition:touchPosition withDirection:direction];
+
+    } else if (gesture.state == UIGestureRecognizerStateChanged) {
+        NSLog(@"Pan");
+        CGPoint redRingCenter = self.redRing.center;
+        redRingCenter.x += point.x - _priorPoint.x;
+        redRingCenter.y += point.y - _priorPoint.y;
+        self.redRing.center = redRingCenter;
+        _priorPoint = redRingCenter;
         
     } else if (gesture.state == UIGestureRecognizerStateEnded) {
         [self removeBackgroundOverlayView];
         [self removeCircles];
     }
 }
-
 
 - (void)addBackgroundOverlayView
 {
@@ -88,10 +104,13 @@
 
 - (void)showCirclesAtPosition:(CGPoint)position withDirection:(int)direction
 {
+    
     [self setCirclePosition:self.firstCircle position:position];
     [self setCirclePosition:self.secondCircle position:position];
     [self setCirclePosition:self.thirdCircle position:position];
+    [self setCirclePosition:self.redRing position:position];
 
+    self.isShowingCircles = YES;
     
     if (direction == 1) { // Left - Up
         
@@ -101,6 +120,7 @@
         self.firstCircle.alpha = 1;
         self.secondCircle.alpha = 1;
         self.thirdCircle.alpha = 1;
+        self.redRing.alpha = 1;
         
         self.firstCircle.transform = CGAffineTransformMakeTranslation(0, -86);
         self.secondCircle.transform = CGAffineTransformMakeTranslation(-71, -71);
@@ -120,6 +140,7 @@
     self.firstCircle.alpha = 0;
     self.secondCircle.alpha = 0;
     self.thirdCircle.alpha = 0;
+    self.redRing.alpha = 0;
     
     self.firstCircle.transform = CGAffineTransformMakeTranslation(0, 0);
     self.secondCircle.transform = CGAffineTransformMakeTranslation(0, 0);

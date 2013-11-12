@@ -19,7 +19,8 @@
 @property (nonatomic, strong) UIImageView *firstCircle;
 @property (nonatomic, strong) UIImageView *secondCircle;
 @property (nonatomic, strong) UIImageView *thirdCircle;
+@property (nonatomic, strong) UIImageView *redRing;
 
-
+@property (nonatomic, assign) BOOL isShowingCircles;
 
 @end
