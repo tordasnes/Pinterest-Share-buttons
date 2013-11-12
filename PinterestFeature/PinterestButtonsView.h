@@ -22,5 +22,6 @@
 @property (nonatomic, strong) UIImageView *redRing;
 
 @property (nonatomic, assign) BOOL isShowingCircles;
+@property (nonatomic, assign) BOOL shouldPan;
 
 @end

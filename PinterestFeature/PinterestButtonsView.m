@@ -8,10 +8,14 @@
 
 #import "PinterestButtonsView.h"
 
+static float const kRedRingMoveLimit = 25;
+static float const kRedRingReactivate = 15;
+
 @interface PinterestButtonsView () <UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, assign) CGPoint priorPoint;
+@property (nonatomic, assign) CGPoint touchDownPoint;
 
 @end
 
@@ -48,6 +52,7 @@
     [self prepareImageView:self.redRing];
     
     self.isShowingCircles = NO;
+    self.shouldPan = YES;
 
     
 }
@@ -61,21 +66,53 @@
         
         [self addBackgroundOverlayView];
         
-        CGPoint touchPosition = [gesture locationInView:self];
-        NSLog(@"%.0f,%.0f", touchPosition.x, touchPosition.y);
+        self.touchDownPoint = point;
+        self.shouldPan = YES;
+        [self.redRing setImage:[UIImage imageNamed:@"redRing"]];
+        
+        NSLog(@"%.0f,%.0f, %.0f", point.x, point.y, self.touchDownPoint.x);
 
         // Add check for where the the tap is on the view
         int direction = 1;
         
-        [self showCirclesAtPosition:touchPosition withDirection:direction];
+        [self showCirclesAtPosition:point withDirection:direction];
 
     } else if (gesture.state == UIGestureRecognizerStateChanged) {
-        NSLog(@"Pan");
         CGPoint redRingCenter = self.redRing.center;
-        redRingCenter.x += point.x - _priorPoint.x;
-        redRingCenter.y += point.y - _priorPoint.y;
-        self.redRing.center = redRingCenter;
-        _priorPoint = redRingCenter;
+
+        if (self.shouldPan) {
+            redRingCenter.x += point.x - _priorPoint.x;
+            redRingCenter.y += point.y - _priorPoint.y;
+            self.redRing.center = redRingCenter;
+            _priorPoint = redRingCenter;
+        } else {
+            if (point.x <= (self.touchDownPoint.x + kRedRingReactivate) &&
+                point.x >= (self.touchDownPoint.x - kRedRingReactivate) &&
+                point.y <= (self.touchDownPoint.y + kRedRingReactivate) &&
+                point.y >= (self.touchDownPoint.y - kRedRingReactivate)) {
+                self.shouldPan = YES;
+                _priorPoint = point;
+                [self.redRing setImage:[UIImage imageNamed:@"redRing"]];
+                [UIView animateWithDuration:0.1 animations:^{
+                    self.redRing.center = point;
+                }];
+
+            
+            }
+        }
+
+        // Limit the panning of the red ring
+        if (point.x >= (self.touchDownPoint.x + kRedRingMoveLimit) ||
+            point.x <= (self.touchDownPoint.x - kRedRingMoveLimit) ||
+            point.y >= (self.touchDownPoint.y + kRedRingMoveLimit) ||
+            point.y <= (self.touchDownPoint.y - kRedRingMoveLimit)) {
+            
+            self.shouldPan = NO;
+            [self.redRing setImage:[UIImage imageNamed:@"grayRing"]];
+            [UIView animateWithDuration:0.13 animations:^{
+                self.redRing.center = self.touchDownPoint;
+            }];
+        }
         
     } else if (gesture.state == UIGestureRecognizerStateEnded) {
         [self removeBackgroundOverlayView];
@@ -89,7 +126,7 @@
     self.backgroundOverlay.alpha = 0;
     [self addSubview:self.backgroundOverlay];
     [UIView animateWithDuration:0.26 animations:^{
-        self.backgroundOverlay.alpha = 0.12;
+        self.backgroundOverlay.alpha = 0.1;
     }];
 }
 
@@ -116,6 +153,8 @@
         
     }
     
+    self.redRing.transform = CGAffineTransformMakeScale(1.8, 1.8);
+    
     [UIView animateWithDuration:0.22 animations:^{
         self.firstCircle.alpha = 1;
         self.secondCircle.alpha = 1;
@@ -125,6 +164,7 @@
         self.firstCircle.transform = CGAffineTransformMakeTranslation(0, -86);
         self.secondCircle.transform = CGAffineTransformMakeTranslation(-71, -71);
         self.thirdCircle.transform = CGAffineTransformMakeTranslation(-86, 0);
+        self.redRing.transform = CGAffineTransformMakeScale(1, 1);
         
     } completion:^(BOOL finished) {
        [UIView animateWithDuration:0.22 animations:^{
