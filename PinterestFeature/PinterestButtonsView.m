@@ -8,10 +8,20 @@
 
 #import "PinterestButtonsView.h"
 
-static float const kRedRingMoveLimit = 25;
-static float const kRedRingReactivate = 15;
+static float const kRedRingMoveLimit = 30;
+static float const kRedRingReactivate = 25;
 
 @interface PinterestButtonsView () <UIGestureRecognizerDelegate>
+{
+    CGFloat firstCircleX;
+    CGFloat firstCircleY;
+    CGFloat secondCircleX;
+    CGFloat secondCircleY;
+    CGFloat thirdCircleX;
+    CGFloat thirdCircleY;
+    
+    CGFloat circleScale;
+}
 
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, assign) CGPoint priorPoint;
@@ -73,6 +83,8 @@ static float const kRedRingReactivate = 15;
     UIView *view = gesture.view;
     CGPoint point = [gesture locationInView:view.superview];
     
+    static CGAffineTransform originalTransform;
+    
     if (gesture.state == UIGestureRecognizerStateBegan) {
         
         [self addBackgroundOverlayView];
@@ -82,6 +94,9 @@ static float const kRedRingReactivate = 15;
         [self.redRing setImage:[UIImage imageNamed:@"redRing"]];
         
         NSLog(@"%.0f,%.0f, %.0f", point.x, point.y, self.touchDownPoint.x);
+        
+        originalTransform = self.firstCircle.transform;
+        circleScale = 1;
 
         // Add check for where the the tap is on the view
         int direction = 0;
@@ -121,7 +136,6 @@ static float const kRedRingReactivate = 15;
                 [UIView animateWithDuration:0.1 animations:^{
                     self.redRing.center = point;
                 }];
-
             }
         }
 
@@ -133,10 +147,22 @@ static float const kRedRingReactivate = 15;
             
             self.shouldPan = NO;
             [self.redRing setImage:[UIImage imageNamed:@"grayRing"]];
-            [UIView animateWithDuration:0.13 animations:^{
+            [UIView animateWithDuration:0.16 animations:^{
                 self.redRing.center = self.touchDownPoint;
             }];
         }
+        
+//        if (1 == 1) { // Add - Check which direction
+//            circleScale += 0.02;
+//            
+//            CGAffineTransform scaleTransform = CGAffineTransformScale(originalTransform, circleScale, circleScale);
+//            
+//            CGAffineTransform position = CGAffineTransformTranslate(originalTransform, firstCircleX + originalTransform.tx, firstCircleY + originalTransform.ty);
+//            
+//            self.firstCircle.transform = CGAffineTransformConcat(scaleTransform, position);
+//        }
+        
+        
         
     } else if (gesture.state == UIGestureRecognizerStateEnded) {
         [self removeBackgroundOverlayView];
@@ -172,13 +198,6 @@ static float const kRedRingReactivate = 15;
     [self setCirclePosition:self.redRing position:position];
 
     self.isShowingCircles = YES;
-    
-    CGFloat firstCircleX;
-    CGFloat firstCircleY;
-    CGFloat secondCircleX;
-    CGFloat secondCircleY;
-    CGFloat thirdCircleX;
-    CGFloat thirdCircleY;
     
     CGFloat firstCircleOffsetX;
     CGFloat firstCircleOffsetY;
