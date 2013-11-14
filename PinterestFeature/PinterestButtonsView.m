@@ -20,7 +20,9 @@ static float const kRedRingReactivate = 25;
     CGFloat thirdCircleX;
     CGFloat thirdCircleY;
     
-    CGFloat circleScale;
+    CGFloat circleScale1;
+    double lastDistance1;
+    CGFloat offsetCircle1Y;
 }
 
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
@@ -96,9 +98,11 @@ static float const kRedRingReactivate = 25;
         NSLog(@"%.0f,%.0f, %.0f", point.x, point.y, self.touchDownPoint.x);
         
         originalTransform = self.firstCircle.transform;
-        circleScale = 1;
+        circleScale1 = 1;
+        lastDistance1 = 80;
+        offsetCircle1Y = 0;
 
-        // Add check for where the the tap is on the view
+        // Check where the the tap is on the view
         int direction = 0;
         CGSize size = self.frame.size;
         
@@ -152,15 +156,44 @@ static float const kRedRingReactivate = 25;
             }];
         }
         
-//        if (1 == 1) { // Add - Check which direction
-//            circleScale += 0.02;
+        if (1 == 1) { // Add - Check which direction
+            
+            
+            
+            }
+//            double distanceFirstCircle = [self getDistanceFromPoint:point cirlce:self.firstCircle];
+//            NSLog(@"%f", distanceFirstCircle);
 //            
-//            CGAffineTransform scaleTransform = CGAffineTransformScale(originalTransform, circleScale, circleScale);
+//            if (distanceFirstCircle < lastDistance1 && distanceFirstCircle > 15) {
+//                lastDistance1 = distanceFirstCircle;
+//                circleScale1 += 0.007;
+//                if (offsetCircle1Y > -30) {
+//                    offsetCircle1Y -= 0.6;
+//
+//                }
+//                if (distanceFirstCircle < 50) {
+//                    [self.firstCircle setImage:[UIImage imageNamed:@"popupCircleRed"]];
+//                }
+//            } else if (distanceFirstCircle > lastDistance1 && circleScale1 >= 1) {
+//                lastDistance1 = distanceFirstCircle;
+//                circleScale1 -= 0.01;
+//                if (offsetCircle1Y < 0) {
+//                    offsetCircle1Y += 1;
+//                }
+//                if (distanceFirstCircle > 50) {
+//                    [self.firstCircle setImage:[UIImage imageNamed:@"popupCircle"]];
+//
+//                }
+//            } else {
+//                [self.firstCircle setImage:[UIImage imageNamed:@"popupCircle"]];
+//            }
 //            
-//            CGAffineTransform position = CGAffineTransformTranslate(originalTransform, firstCircleX + originalTransform.tx, firstCircleY + originalTransform.ty);
+//            CGAffineTransform scaleTransform = CGAffineTransformScale(originalTransform, circleScale1, circleScale1);
+//            
+//            CGAffineTransform position = CGAffineTransformTranslate(originalTransform, firstCircleX + originalTransform.tx, firstCircleY + originalTransform.ty + offsetCircle1Y);
 //            
 //            self.firstCircle.transform = CGAffineTransformConcat(scaleTransform, position);
-//        }
+        
         
         
         
@@ -329,6 +362,12 @@ static float const kRedRingReactivate = 25;
 - (void)setCirclePosition:(UIImageView*)circle position:(CGPoint)position
 {
     [circle setCenter:position];
+}
+
+- (double)getDistanceFromPoint:(CGPoint)point cirlce:(UIImageView*)circle
+{
+    return sqrt(pow(((circle.center.x) - point.x), 2)
+                + pow(((circle.center.y) - point.y), 2));
 }
 
 - (void)prepareImageView:(UIImageView*)image
