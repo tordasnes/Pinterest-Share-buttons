@@ -20,9 +20,6 @@ static float const kRedRingReactivate = 25;
     CGFloat thirdCircleX;
     CGFloat thirdCircleY;
     
-    CGFloat circleScale1;
-    double lastDistance1;
-    CGFloat offsetCircle1Y;
 }
 
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
@@ -98,10 +95,7 @@ static float const kRedRingReactivate = 25;
         NSLog(@"%.0f,%.0f, %.0f", point.x, point.y, self.touchDownPoint.x);
         
         originalTransform = self.firstCircle.transform;
-        circleScale1 = 1;
-        lastDistance1 = 80;
-        offsetCircle1Y = 0;
-
+        
         // Check where the the tap is on the view
         int direction = 0;
         CGSize size = self.frame.size;
@@ -156,49 +150,10 @@ static float const kRedRingReactivate = 25;
             }];
         }
         
-        if (1 == 1) { // Add - Check which direction
-            
-            
-            
-            }
-//            double distanceFirstCircle = [self getDistanceFromPoint:point cirlce:self.firstCircle];
-//            NSLog(@"%f", distanceFirstCircle);
-//            
-//            if (distanceFirstCircle < lastDistance1 && distanceFirstCircle > 15) {
-//                lastDistance1 = distanceFirstCircle;
-//                circleScale1 += 0.007;
-//                if (offsetCircle1Y > -30) {
-//                    offsetCircle1Y -= 0.6;
-//
-//                }
-//                if (distanceFirstCircle < 50) {
-//                    [self.firstCircle setImage:[UIImage imageNamed:@"popupCircleRed"]];
-//                }
-//            } else if (distanceFirstCircle > lastDistance1 && circleScale1 >= 1) {
-//                lastDistance1 = distanceFirstCircle;
-//                circleScale1 -= 0.01;
-//                if (offsetCircle1Y < 0) {
-//                    offsetCircle1Y += 1;
-//                }
-//                if (distanceFirstCircle > 50) {
-//                    [self.firstCircle setImage:[UIImage imageNamed:@"popupCircle"]];
-//
-//                }
-//            } else {
-//                [self.firstCircle setImage:[UIImage imageNamed:@"popupCircle"]];
-//            }
-//            
-//            CGAffineTransform scaleTransform = CGAffineTransformScale(originalTransform, circleScale1, circleScale1);
-//            
-//            CGAffineTransform position = CGAffineTransformTranslate(originalTransform, firstCircleX + originalTransform.tx, firstCircleY + originalTransform.ty + offsetCircle1Y);
-//            
-//            self.firstCircle.transform = CGAffineTransformConcat(scaleTransform, position);
-        
-        
-        
         
     } else if (gesture.state == UIGestureRecognizerStateEnded) {
         [self removeBackgroundOverlayView];
+        [self.firstCircle setImage:[UIImage imageNamed:@"popupCircle"]];
         [self removeCircles];
     }
 }
@@ -330,19 +285,19 @@ static float const kRedRingReactivate = 25;
         self.thirdCircle.alpha = 1;
         self.redRing.alpha = 1;
         
-        self.firstCircle.transform = CGAffineTransformMakeTranslation(firstCircleX + firstCircleOffsetX,
-                                                                      firstCircleY + firstCircleOffsetY);
-        self.secondCircle.transform = CGAffineTransformMakeTranslation(secondCircleX + secondCircleOffsetX,
-                                                                       secondCircleY + secondCircleOffsetY);
-        self.thirdCircle.transform = CGAffineTransformMakeTranslation(thirdCircleX + thirdCircleOffsetX,
-                                                                      thirdCircleY + thirdCircleOffsetY);
+        self.firstCircle.center = CGPointMake(position.x + firstCircleX + firstCircleOffsetX,
+                                                                      position.y + firstCircleY + firstCircleOffsetY);
+        self.secondCircle.center = CGPointMake(position.x + secondCircleX + secondCircleOffsetX,
+                                                                       position.y + secondCircleY + secondCircleOffsetY);
+        self.thirdCircle.center = CGPointMake(position.x + thirdCircleX + thirdCircleOffsetX,
+                                                                      position.y + thirdCircleY + thirdCircleOffsetY);
         self.redRing.transform = CGAffineTransformMakeScale(1, 1);
         
     } completion:^(BOOL finished) {
        [UIView animateWithDuration:0.22 animations:^{
-           self.firstCircle.transform = CGAffineTransformMakeTranslation(firstCircleX, firstCircleY);
-           self.secondCircle.transform = CGAffineTransformMakeTranslation(secondCircleX, secondCircleY);
-           self.thirdCircle.transform = CGAffineTransformMakeTranslation(thirdCircleX, thirdCircleY);
+           self.firstCircle.center = CGPointMake(position.x + firstCircleX, position.y + firstCircleY);
+           self.secondCircle.center = CGPointMake(position.x + secondCircleX, position.y + secondCircleY);
+           self.thirdCircle.center = CGPointMake(position.x + thirdCircleX, position.y + thirdCircleY);
        }];
     }];
 }
@@ -364,10 +319,10 @@ static float const kRedRingReactivate = 25;
     [circle setCenter:position];
 }
 
-- (double)getDistanceFromPoint:(CGPoint)point cirlce:(UIImageView*)circle
+- (double)getDistanceFromPoint:(CGPoint)point toPoint:(CGPoint)secondPoint
 {
-    return sqrt(pow(((circle.center.x) - point.x), 2)
-                + pow(((circle.center.y) - point.y), 2));
+    return sqrt(pow(((secondPoint.x) - point.x), 2)
+                + pow(((secondPoint.y) - point.y), 2));
 }
 
 - (void)prepareImageView:(UIImageView*)image
